@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35005.142
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YoutubePodSmart.Audio", "YoutubePodSmart.Audio\YoutubePodSmart.Audio.csproj", "{D042D632-173E-4526-A9E8-7A8C3A9B550E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YoutubePodSmart.OpenAi", "YoutubePodSmart.OpenAi\YoutubePodSmart.OpenAi.csproj", "{5374AB1B-AD49-4BBE-9869-A9BAA234098E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YoutubePodSmart.Video", "YoutubePodSmart.Video\YoutubePodSmart.Video.csproj", "{350939EA-0956-4E22-ACED-4494A0C01D33}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YoutubePodSmart.WinForms", "YoutubePodSmart.WinFroms\YoutubePodSmart.WinForms.csproj", "{3B831354-D289-4BAE-A056-955B009108CA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D042D632-173E-4526-A9E8-7A8C3A9B550E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D042D632-173E-4526-A9E8-7A8C3A9B550E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D042D632-173E-4526-A9E8-7A8C3A9B550E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D042D632-173E-4526-A9E8-7A8C3A9B550E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5374AB1B-AD49-4BBE-9869-A9BAA234098E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5374AB1B-AD49-4BBE-9869-A9BAA234098E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5374AB1B-AD49-4BBE-9869-A9BAA234098E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5374AB1B-AD49-4BBE-9869-A9BAA234098E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{350939EA-0956-4E22-ACED-4494A0C01D33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{350939EA-0956-4E22-ACED-4494A0C01D33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{350939EA-0956-4E22-ACED-4494A0C01D33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{350939EA-0956-4E22-ACED-4494A0C01D33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B831354-D289-4BAE-A056-955B009108CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B831354-D289-4BAE-A056-955B009108CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B831354-D289-4BAE-A056-955B009108CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B831354-D289-4BAE-A056-955B009108CA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {26E7A1AD-57A8-4E77-93BF-FBF53858CD76}
+	EndGlobalSection
+EndGlobal
