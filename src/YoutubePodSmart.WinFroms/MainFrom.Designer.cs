@@ -102,7 +102,6 @@ partial class MainForm
         statusLabel.Name = "statusLabel";
         statusLabel.Size = new Size(0, 15);
         statusLabel.TabIndex = 5;
-        statusLabel.Click += StatusLabel_Click;
         // 
         // TranscribeButton
         // 

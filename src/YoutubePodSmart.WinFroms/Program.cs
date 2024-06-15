@@ -41,7 +41,7 @@ internal static class Program
         catch (Exception ex)
         {
             Log.Logger?.Fatal(ex, "An unhandled exception occurred during application execution.");
-            MessageBox.Show("And somehow we crushed :(. Please check the log file for details.",
+            MessageBox.Show("And somehow we crashed :(. Please check the log file for details.",
                 "Fatal Error",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
@@ -66,13 +66,11 @@ internal static class Program
 
     private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton(_ => new MainForm(configuration));
-
-        //services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
-        //services.AddSingleton(Log.Logger);
+        services.AddSingleton<MainForm>();
+        services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
     }
 
-    public static IConfiguration BuildConfiguration()
+    private static IConfiguration BuildConfiguration()
     {
         var builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
