@@ -28,6 +28,7 @@ partial class MainForm
     /// </summary>
     private void InitializeComponent()
     {
+        components = new System.ComponentModel.Container();
         GetVideoButton = new Button();
         videoSourceTextBox = new TextBox();
         audioFormatRadioButton = new RadioButton();
@@ -37,7 +38,13 @@ partial class MainForm
         TranscribeButton = new Button();
         transcriptTextBox = new TextBox();
         GetSummaryButton = new Button();
+        progressTimer = new System.Windows.Forms.Timer(components);
         SuspendLayout();
+        //
+        // Timer
+        //
+        progressTimer.Interval = 3000;
+        progressTimer.Tick += ProgressTimer_Tick;
         // 
         // GetVideoButton
         // 
@@ -85,6 +92,7 @@ partial class MainForm
         progressBar.Name = "progressBar";
         progressBar.Size = new Size(755, 23);
         progressBar.TabIndex = 4;
+        progressBar.Maximum = 100;
         // 
         // statusLabel
         // 
@@ -125,7 +133,7 @@ partial class MainForm
         GetSummaryButton.UseVisualStyleBackColor = true;
         GetSummaryButton.Click += GetSummaryButton_Click;
         // 
-        // MainFrom
+        // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
@@ -156,4 +164,5 @@ partial class MainForm
     private Button TranscribeButton;
     private TextBox transcriptTextBox;
     private Button GetSummaryButton;
+    private System.Windows.Forms.Timer progressTimer;
 }

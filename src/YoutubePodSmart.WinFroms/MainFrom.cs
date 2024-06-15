@@ -4,7 +4,6 @@ using YoutubePodSmart.OpenAi;
 using YoutubePodSmart.OpenAi.Contracts;
 using YoutubePodSmart.Video;
 using YoutubePodSmart.WinForms.SettingsModels;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace YoutubePodSmart.WinForms;
 
@@ -35,6 +34,9 @@ public partial class MainForm : Form
 
         _aiService = new OpenAiService(apiKey, models.AudioModel, models.CompletionModel);
 
+        FormBorderStyle = FormBorderStyle.FixedSingle;
+        MaximizeBox = false;
+
         InitializeComponent();
     }
 
@@ -48,8 +50,8 @@ public partial class MainForm : Form
             return;
         }
 
+        statusLabel.Text = @"Getting ready...";
         progressBar.Value = new Random().Next(5, 17);
-        progressBar.Maximum = 100;
 
         var videoFilePath = Path.Combine(Folder);
 
@@ -62,10 +64,10 @@ public partial class MainForm : Form
             if (File.Exists(_videoFileName))
             {
                 statusLabel.Text = @"Video already downloaded";
+                progressBar.Value = 100;
                 return;
             }
 
-            statusLabel.Text = @"Getting ready...";
             var progressHandler = new Progress<double>(val =>
             {
                 progressBar.Value = (int)(val * 100);
@@ -84,7 +86,7 @@ public partial class MainForm : Form
         }
     }
 
-    private void GetAudioButton_Click(object sender, EventArgs e)
+    private async void GetAudioButton_Click(object sender, EventArgs e)
     {
         if (string.IsNullOrEmpty(_videoFileName))
         {
@@ -92,30 +94,27 @@ public partial class MainForm : Form
             return;
         }
 
-        progressBar.Value = new Random().Next(25, 37);
-        progressBar.Maximum = 100;
-
         statusLabel.Text = @"Analyzing source file...";
+        progressBar.Value = new Random().Next(15, 37);
+
         _audioFileName = Path.ChangeExtension(_videoFileName, ".mp3");
 
         if (File.Exists(_audioFileName))
         {
             statusLabel.Text = @"Audio already extracted";
+            progressBar.Value = 100;
             return;
         }
 
         try
         {
-            var progressHandler = new Progress<double>(val =>
-            {
-                progressBar.Value = (int)(val * 100);
-                statusLabel.Text = $@"Extracting audio... {progressBar.Value}%";
+            progressTimer.Start();
+            statusLabel.Text = @"Extracting audio...";
 
-                if (progressBar.Value == 100)
-                    statusLabel.Text = @"Audio extracted";
-            });
+            await Task.Run(() => new Extract().GetAudioFromVideo(_videoFileName, _audioFileName));
 
-            new Extract().GetAudioFromVideo(_videoFileName, _audioFileName, progressHandler);
+            progressBar.Value = 100;
+            statusLabel.Text = @"Audio extracted";
         }
         catch (Exception ex)
         {
@@ -134,22 +133,22 @@ public partial class MainForm : Form
 
         _textFileName = Path.ChangeExtension(_audioFileName, ".txt");
         transcriptTextBox.Text = string.Empty;
-        progressBar.Value = 0;
+        progressBar.Value = 3;
 
         try
         {
             if (!File.Exists(_textFileName))
             {
-                progressBar.Value = 67;
                 statusLabel.Text = @"Transcribing audio...";
+                progressBar.Value = new Random().Next(8, 21);
+                progressTimer.Start();
+
                 var transcription = await _aiService.TranscribeAudioAsync(_audioFileName);
 
                 statusLabel.Text = @"Normalizing transcription...";
-                progressBar.Value = 83;
                 transcription = await _aiService.GetCompletionForPromptAsync(transcription, _prompts.PromptForAudioTranscriptionTextNormalization);
 
                 await File.WriteAllTextAsync(_textFileName, transcription);
-                progressBar.Value = 100;
             }
 
             var text = await File.ReadAllTextAsync(_textFileName);
@@ -157,6 +156,7 @@ public partial class MainForm : Form
             PopulateTextBox(text);
 
             statusLabel.Text = @"Audio transcribed";
+            progressBar.Value = 100;
         }
         catch (Exception ex)
         {
@@ -175,12 +175,12 @@ public partial class MainForm : Form
 
         _summaryFileName = Path.ChangeExtension(_textFileName, ".sum");
         transcriptTextBox.Text = string.Empty;
-        progressBar.Value = 15;
+        progressBar.Value = 6;
 
         try
         {
-            progressBar.Value = 55;
             statusLabel.Text = @"Analyzing transcription...";
+            progressBar.Value = new Random().Next(11, 34);
 
             var transcription = await File.ReadAllTextAsync(_textFileName);
 
@@ -199,6 +199,7 @@ public partial class MainForm : Form
             progressBar.Value = 0;
         }
     }
+
     private void PopulateTextBox(string text)
     {
         foreach (var item in text.Split(new string[] { "\n\n" }, StringSplitOptions.None))
@@ -209,5 +210,17 @@ public partial class MainForm : Form
 
     private void StatusLabel_Click(object sender, EventArgs e)
     {
+    }
+
+    private void ProgressTimer_Tick(object sender, EventArgs e)
+    {
+        if (progressBar.Value < 90)
+        {
+            progressBar.Value += new Random().Next(1,6);
+        }
+        else
+        {
+            progressTimer.Stop();
+        }
     }
 }

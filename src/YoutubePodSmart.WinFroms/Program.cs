@@ -66,12 +66,8 @@ internal static class Program
 
     private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        //services.Configure<AiModelSettings>(configuration.GetSection("AiModelSettings"));
         services.AddSingleton(_ => new MainForm(configuration));
 
-        //services.Configure<OpenAiSettings>(configuration.GetSection("OpenAiSettings"));
-        //services.AddSingleton<MainForm>();
-        //services.AddSingleton<IAiService, OpenAiService>(_ => new OpenAiService(configuration["OpenAiSettings:ApiKey"]!));
         //services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
         //services.AddSingleton(Log.Logger);
     }
