@@ -1,6 +1,6 @@
 ﻿namespace YoutubePodSmart.WinForms;
 
-partial class MainFrom
+partial class MainForm
 {
     /// <summary>
     ///  Required designer variable.
@@ -34,6 +34,9 @@ partial class MainFrom
         GetAudioButton = new Button();
         progressBar = new ProgressBar();
         statusLabel = new Label();
+        TranscribeButton = new Button();
+        transcriptTextBox = new TextBox();
+        GetSummaryButton = new Button();
         SuspendLayout();
         // 
         // GetVideoButton
@@ -91,20 +94,52 @@ partial class MainFrom
         statusLabel.Name = "statusLabel";
         statusLabel.Size = new Size(0, 15);
         statusLabel.TabIndex = 5;
-        statusLabel.Click += label1_Click;
+        statusLabel.Click += StatusLabel_Click;
+        // 
+        // TranscribeButton
+        // 
+        TranscribeButton.Location = new Point(703, 117);
+        TranscribeButton.Name = "TranscribeButton";
+        TranscribeButton.Size = new Size(75, 23);
+        TranscribeButton.TabIndex = 6;
+        TranscribeButton.Text = "Transcribe";
+        TranscribeButton.UseVisualStyleBackColor = true;
+        TranscribeButton.Click += TranscribeButton_Click;
+        // 
+        // transcriptTextBox
+        // 
+        transcriptTextBox.Location = new Point(23, 117);
+        transcriptTextBox.Multiline = true;
+        transcriptTextBox.Name = "transcriptTextBox";
+        transcriptTextBox.ScrollBars = ScrollBars.Vertical;
+        transcriptTextBox.Size = new Size(651, 255);
+        transcriptTextBox.TabIndex = 7;
+        // 
+        // GetSummaryButton
+        // 
+        GetSummaryButton.Location = new Point(703, 166);
+        GetSummaryButton.Name = "GetSummaryButton";
+        GetSummaryButton.Size = new Size(75, 23);
+        GetSummaryButton.TabIndex = 8;
+        GetSummaryButton.Text = "Summarize";
+        GetSummaryButton.UseVisualStyleBackColor = true;
+        GetSummaryButton.Click += GetSummaryButton_Click;
         // 
         // MainFrom
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(800, 450);
+        Controls.Add(GetSummaryButton);
+        Controls.Add(transcriptTextBox);
+        Controls.Add(TranscribeButton);
         Controls.Add(statusLabel);
         Controls.Add(progressBar);
         Controls.Add(GetAudioButton);
         Controls.Add(audioFormatRadioButton);
         Controls.Add(videoSourceTextBox);
         Controls.Add(GetVideoButton);
-        Name = "MainFrom";
+        Name = "MainForm";
         Text = "Youtube Pod Smart Summary";
         ResumeLayout(false);
         PerformLayout();
@@ -118,4 +153,7 @@ partial class MainFrom
     private Button GetAudioButton;
     private ProgressBar progressBar;
     private Label statusLabel;
+    private Button TranscribeButton;
+    private TextBox transcriptTextBox;
+    private Button GetSummaryButton;
 }
