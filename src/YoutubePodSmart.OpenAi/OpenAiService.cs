@@ -1,7 +1,6 @@
 ﻿using OpenAI;
 using OpenAI.Audio;
 using OpenAI.Chat;
-using YoutubePodSmart.OpenAi.Contracts;
 
 namespace YoutubePodSmart.OpenAi;
 

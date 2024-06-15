@@ -2,7 +2,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using YoutubePodSmart.Audio;
 using YoutubePodSmart.OpenAi;
-using YoutubePodSmart.OpenAi.Contracts;
 using YoutubePodSmart.Video;
 using YoutubePodSmart.WinForms.SettingsModels;
 
@@ -62,11 +61,11 @@ public partial class MainForm : Form
         _logger.LogInformation("Preparing to download video from URL: {VideoUrl}", videoFileUrl);
 
         var videoFilePath = Path.Combine(Folder);
-        var youtube = new Youtube(videoFileUrl);
+        IVideoProvider youtube = new Youtube(videoFileUrl);
 
         try
         {
-            _videoFileName = await youtube.GetVideoFileName(videoFilePath);
+            _videoFileName = await youtube.GetVideoFileNameAsync(videoFilePath);
 
             if (File.Exists(_videoFileName))
             {
@@ -84,7 +83,7 @@ public partial class MainForm : Form
                     UpdateStatus("Video downloaded", 100);
             });
 
-            await youtube.GetYoutubeVideo(_videoFileName, progressHandler);
+            await youtube.GetVideoAsync(_videoFileName, progressHandler);
             UpdateStatus("Video downloaded", 100);
             _logger.LogInformation("Video downloaded successfully to path: {VideoPath}", _videoFileName);
         }
@@ -121,7 +120,7 @@ public partial class MainForm : Form
             progressTimer.Start();
             UpdateStatus("Extracting audio...");
 
-            await Task.Run(() => new Extract().GetAudioFromVideo(_videoFileName, _audioFileName));
+            await Task.Run(() => new ExtractorFFMpeg().GetAudioFromVideo(_videoFileName, _audioFileName));
 
             UpdateStatus("Audio extracted", 100);
             progressTimer.Stop();

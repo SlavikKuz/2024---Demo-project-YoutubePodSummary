@@ -2,7 +2,7 @@ using NReco.VideoConverter;
 
 namespace YoutubePodSmart.Audio;
 
-public class Extract
+public class ExtractorFFMpeg : IAudioProvider
 {
     public void GetAudioFromVideo(string inputVideoFilePath, string outputAudioFilePath)
     {

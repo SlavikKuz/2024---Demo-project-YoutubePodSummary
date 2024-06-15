@@ -1,4 +1,4 @@
-﻿namespace YoutubePodSmart.OpenAi.Contracts;
+﻿namespace YoutubePodSmart.OpenAi;
 
 public interface IAiService
 {

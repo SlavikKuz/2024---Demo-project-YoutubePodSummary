@@ -4,7 +4,7 @@ using YoutubeExplode.Videos.Streams;
 
 namespace YoutubePodSmart.Video;
 
-public class Youtube
+public class Youtube : IVideoProvider
 {
     private readonly YoutubeClient _client;
     private readonly VideoId _videoId;
@@ -15,7 +15,7 @@ public class Youtube
         _videoId = VideoId.Parse(url);
     }
 
-    public async Task<string> GetVideoFileName(string path)
+    public async Task<string> GetVideoFileNameAsync(string path)
     {
         var video = await _client.Videos.GetAsync(_videoId);
         var videoTitle = video.Title;
@@ -28,7 +28,7 @@ public class Youtube
     }
 
 
-    public async Task<string> GetYoutubeVideo(string videoPath, IProgress<double>? progress = null)
+    public async Task<string> GetVideoAsync(string videoPath, IProgress<double>? progress = null)
     {
         var streamManifest = await _client.Videos.Streams.GetManifestAsync(_videoId);
         var streamInfo = streamManifest.GetMuxedStreams().GetWithHighestVideoQuality();
