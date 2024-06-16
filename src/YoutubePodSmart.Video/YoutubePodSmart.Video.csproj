@@ -10,4 +10,8 @@
     <PackageReference Include="YoutubeExplode" Version="6.3.16" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\YoutubePodSmart.Common\YoutubePodSmart.Common.csproj" />
+  </ItemGroup>
+
 </Project>

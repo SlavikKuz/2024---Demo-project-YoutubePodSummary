@@ -1,6 +1,7 @@
 using YoutubeExplode;
 using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
+using YoutubePodSmart.Common.Contracts;
 
 namespace YoutubePodSmart.Video;
 

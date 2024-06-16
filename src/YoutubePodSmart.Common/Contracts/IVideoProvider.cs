@@ -1,4 +1,4 @@
-﻿namespace YoutubePodSmart.Video;
+﻿namespace YoutubePodSmart.Common.Contracts;
 
 public interface IVideoProvider
 {

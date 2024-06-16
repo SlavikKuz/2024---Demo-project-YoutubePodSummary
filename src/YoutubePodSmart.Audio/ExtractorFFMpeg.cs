@@ -1,4 +1,5 @@
 using NReco.VideoConverter;
+using YoutubePodSmart.Common.Contracts;
 
 namespace YoutubePodSmart.Audio;
 

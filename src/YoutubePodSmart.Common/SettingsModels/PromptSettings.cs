@@ -1,4 +1,4 @@
-﻿namespace YoutubePodSmart.WinForms.SettingsModels;
+﻿namespace YoutubePodSmart.Common.SettingsModels;
 
 public class PromptSettings
 {

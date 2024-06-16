@@ -10,4 +10,8 @@
     <PackageReference Include="NReco.VideoConverter" Version="1.2.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\YoutubePodSmart.Common\YoutubePodSmart.Common.csproj" />
+  </ItemGroup>
+
 </Project>

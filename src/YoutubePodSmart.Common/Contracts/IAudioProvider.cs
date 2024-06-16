@@ -1,4 +1,4 @@
-﻿namespace YoutubePodSmart.Audio;
+﻿namespace YoutubePodSmart.Common.Contracts;
 
 public interface IAudioProvider
 {

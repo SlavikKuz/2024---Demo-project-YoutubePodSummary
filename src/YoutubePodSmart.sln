@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YoutubePodSmart.Video", "Yo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YoutubePodSmart.WinForms", "YoutubePodSmart.WinFroms\YoutubePodSmart.WinForms.csproj", "{3B831354-D289-4BAE-A056-955B009108CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YoutubePodSmart.Maui", "YoutubePodSmart.Maui\YoutubePodSmart.Maui.csproj", "{2CCFD2FD-2C8A-43EC-B528-5B915734E8D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YoutubePodSmart.Common", "YoutubePodSmart.Common\YoutubePodSmart.Common.csproj", "{16430598-FD41-4B48-90F4-D2A17717456F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,16 @@ Global
 		{3B831354-D289-4BAE-A056-955B009108CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B831354-D289-4BAE-A056-955B009108CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B831354-D289-4BAE-A056-955B009108CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CCFD2FD-2C8A-43EC-B528-5B915734E8D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CCFD2FD-2C8A-43EC-B528-5B915734E8D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CCFD2FD-2C8A-43EC-B528-5B915734E8D4}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{2CCFD2FD-2C8A-43EC-B528-5B915734E8D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CCFD2FD-2C8A-43EC-B528-5B915734E8D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CCFD2FD-2C8A-43EC-B528-5B915734E8D4}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{16430598-FD41-4B48-90F4-D2A17717456F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16430598-FD41-4B48-90F4-D2A17717456F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16430598-FD41-4B48-90F4-D2A17717456F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16430598-FD41-4B48-90F4-D2A17717456F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

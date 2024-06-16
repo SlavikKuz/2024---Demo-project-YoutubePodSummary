@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:YoutubePodSmart.Maui.ViewModels"
+             x:Class="YoutubePodSmart.Maui.MainPage">
+
+    <ContentPage.BindingContext>
+        <vm:MainViewModel />
+    </ContentPage.BindingContext>
+
+    <StackLayout Padding="10">
+        <Entry Placeholder="Enter Video URL" Text="{Binding VideoInfo.VideoUrl}" />
+        <Button Text="Get Video" Command="{Binding GetVideoCommand}" />
+        <Button Text="Get Audio" Command="{Binding GetAudioCommand}" />
+        <Button Text="Transcribe Audio" Command="{Binding TranscribeAudioCommand}" />
+        <Button Text="Get Summary" Command="{Binding SummarizeTranscriptionCommand}" />
+        <Editor Text="{Binding VideoInfo.Transcription}" IsReadOnly="True" />
+    </StackLayout>
+</ContentPage>

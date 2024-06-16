@@ -1,9 +1,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using YoutubePodSmart.Audio;
+using YoutubePodSmart.Common.Contracts;
+using YoutubePodSmart.Common.SettingsModels;
 using YoutubePodSmart.OpenAi;
 using YoutubePodSmart.Video;
-using YoutubePodSmart.WinForms.SettingsModels;
 
 namespace YoutubePodSmart.WinForms;
 
