@@ -3,9 +3,9 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using YoutubePodSmart.Audio;
 using YoutubePodSmart.Common.Contracts;
 using YoutubePodSmart.Common.SettingsModels;
+using YoutubePodSmart.Maui.AudioExtractor;
 using YoutubePodSmart.Maui.Models;
 using YoutubePodSmart.OpenAi;
 using YoutubePodSmart.Video;
@@ -19,6 +19,11 @@ public class MainViewModel : INotifyPropertyChanged
     private readonly ILogger<MainViewModel> _logger;
     private readonly PromptSettings _prompts;
     private VideoInfo _videoInfo;
+    private bool _keepVideo;
+    private bool _keepAudio;
+    private bool _keepTranscription;
+    private bool _isBusy;
+    private string _viewText;
 
     public VideoInfo VideoInfo
     {
@@ -30,29 +35,71 @@ public class MainViewModel : INotifyPropertyChanged
         }
     }
 
+    public bool KeepVideo
+    {
+        get => _keepVideo;
+        set
+        {
+            _keepVideo = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool KeepAudio
+    {
+        get => _keepAudio;
+        set
+        {
+            _keepAudio = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool KeepTranscription
+    {
+        get => _keepTranscription;
+        set
+        {
+            _keepTranscription = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool IsBusy
+    {
+        get => _isBusy;
+        set
+        {
+            _isBusy = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public string ViewText
+    {
+        get => _viewText;
+        set
+        {
+            _viewText = value;
+            OnPropertyChanged();
+        }
+    }
+
     public ICommand GetVideoCommand { get; }
-    public ICommand GetAudioCommand { get; }
-    public ICommand TranscribeAudioCommand { get; }
-    public ICommand SummarizeTranscriptionCommand { get; }
 
     public MainViewModel()
     {
         // Initialize commands to do nothing to prevent null reference exceptions
         GetVideoCommand = new Command(() => { });
-        GetAudioCommand = new Command(() => { });
-        TranscribeAudioCommand = new Command(() => { });
-        SummarizeTranscriptionCommand = new Command(() => { });
-
         _logger?.LogInformation("Parameterless constructor called.");
     }
 
     public MainViewModel(IConfiguration configuration, ILogger<MainViewModel> logger)
     {
-        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _configuration = configuration;
+        _logger = logger;
 
-        var apiKey = _configuration["OpenAiSettings:ApiKey"] ??
-                     throw new ArgumentNullException("ApiKey", "ApiKey not found in the configuration!");
+        var apiKey = _configuration["OpenAiSettings:ApiKey"];
         _logger.LogInformation("API key retrieved from configuration.");
 
         var models = new AiModelSettings();
@@ -68,97 +115,164 @@ public class MainViewModel : INotifyPropertyChanged
 
         VideoInfo = new VideoInfo();
 
-        GetVideoCommand = new Command(async () => await GetVideoAsync(VideoInfo.VideoUrl, "D:\\AppFolder"));
-        GetAudioCommand = new Command(async () => await GetAudioAsync());
-        TranscribeAudioCommand = new Command(async () => await TranscribeAudioAsync());
-        SummarizeTranscriptionCommand = new Command(async () => await SummarizeTranscriptionAsync());
+        // Set default values for checkboxes
+        _keepVideo = true;
+        _keepAudio = true;
+        _keepTranscription = true;
+
+        GetVideoCommand = new Command(async () => await ProcessFileAsync(VideoInfo.VideoUrl));
     }
 
-    public async Task GetVideoAsync(string videoFileUrl, string folderPath)
+    public async Task ProcessFileAsync(string videoFileUrl)
     {
-        if (string.IsNullOrEmpty(videoFileUrl))
+        try
         {
-            throw new ArgumentException("Video URL is required", nameof(videoFileUrl));
+            if (string.IsNullOrEmpty(videoFileUrl))
+                throw new ArgumentException("Video URL is required");
+
+            IsBusy = true;
+            ViewText = "Starting process...\n";
+
+            ViewText += "Downloading video...\n";
+            await GetVideoAsync(videoFileUrl);
+
+            ViewText += "Extracting audio...\n";
+            await GetAudioAsync();
+
+            ViewText += "Transcribing audio...\n";
+            await TranscribeAudioAsync();
+
+            ViewText += "Summarizing transcription...\n";
+            await SummarizeTranscriptionAsync();
+
+            CleanupFiles();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error: {Message}", ex.Message);
+            await Application.Current?.MainPage?.DisplayAlert("Error", ex.Message, "OK")!;
+            ViewText += $"Error: {ex.Message}\n";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private static string GetPlatformSpecificPath(string folderName)
+    {
+        string basePath;
+
+        if (DeviceInfo.Platform == DevicePlatform.Android)
+        {
+            basePath = FileSystem.AppDataDirectory;
+        }
+        else if (DeviceInfo.Platform == DevicePlatform.WinUI)
+        {
+            basePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        }
+        else
+        {
+            throw new PlatformNotSupportedException("Platform not supported");
         }
 
+        return Path.Combine(basePath, folderName);
+    }
+
+    private async Task GetVideoAsync(string videoFileUrl)
+    {
         IVideoProvider youtube = new Youtube(videoFileUrl);
-        var videoFilePath = Path.Combine(folderPath);
+        var folderPath = GetPlatformSpecificPath(_configuration["Settings:FolderPath"]);
 
-        VideoInfo.VideoFileName = await youtube.GetVideoFileNameAsync(videoFilePath);
+        EnsureDirectoryExists(folderPath);
+
+        VideoInfo.VideoFileName = await Task.Run(() => { return youtube.GetVideoFileNameAsync(folderPath); });
+
         if (File.Exists(VideoInfo.VideoFileName))
-        {
-            _logger.LogInformation("Video already exists at path: {VideoPath}", VideoInfo.VideoFileName);
             return;
-        }
 
-        var progressHandler = new Progress<double>(val =>
-        {
-            var progressValue = (int)(val * 100);
-            // Update progress
-        });
-
-        await youtube.GetVideoAsync(VideoInfo.VideoFileName, progressHandler);
+        await Task.Run(() => youtube.GetVideoAsync(VideoInfo.VideoFileName));
         _logger.LogInformation("Video downloaded successfully to path: {VideoPath}", VideoInfo.VideoFileName);
+        ViewText += $"Video downloaded to: {VideoInfo.VideoFileName}\n";
     }
 
     public async Task GetAudioAsync()
     {
-        if (string.IsNullOrEmpty(VideoInfo.VideoFileName))
-        {
-            throw new InvalidOperationException("Download a video first.");
-        }
-
         VideoInfo.AudioFileName = Path.ChangeExtension(VideoInfo.VideoFileName, ".mp3");
 
         if (File.Exists(VideoInfo.AudioFileName))
-        {
-            _logger.LogInformation("Audio already exists at path: {AudioPath}", VideoInfo.AudioFileName);
             return;
-        }
 
-        await Task.Run(() => new ExtractorFFMpeg().GetAudioFromVideo(VideoInfo.VideoFileName, VideoInfo.AudioFileName));
+        await new ExtractorAndroidFfMpegCore().GetAudioFromVideoAsync(VideoInfo.VideoFileName, VideoInfo.AudioFileName);
         _logger.LogInformation("Audio extracted successfully to path: {AudioPath}", VideoInfo.AudioFileName);
+        ViewText += $"Audio extracted to: {VideoInfo.AudioFileName}\n";
     }
 
     public async Task TranscribeAudioAsync()
     {
-        if (string.IsNullOrEmpty(VideoInfo.AudioFileName))
-        {
-            throw new InvalidOperationException("Extract audio first.");
-        }
-
         VideoInfo.TextFileName = Path.ChangeExtension(VideoInfo.AudioFileName, ".txt");
 
         if (File.Exists(VideoInfo.TextFileName))
-        {
             return;
-        }
 
-        var transcription = await _aiService.TranscribeAudioAsync(VideoInfo.AudioFileName);
-        transcription =
-            await _aiService.GetCompletionForPromptAsync(transcription,
-                _prompts.PromptForAudioTranscriptionTextNormalization);
+        var transcription = await Task.Run(async () => await _aiService.TranscribeAudioAsync(VideoInfo.AudioFileName));
+        transcription = await Task.Run(async () => await _aiService.GetCompletionForPromptAsync(transcription,
+            _prompts.PromptForAudioTranscriptionTextNormalization));
 
         await File.WriteAllTextAsync(VideoInfo.TextFileName, transcription);
         _logger.LogInformation("Audio transcribed successfully. Transcription saved to: {TextFile}",
             VideoInfo.TextFileName);
+        ViewText += $"Transcription saved to: {VideoInfo.TextFileName}\n";
     }
 
     public async Task SummarizeTranscriptionAsync()
     {
-        if (string.IsNullOrEmpty(VideoInfo.TextFileName))
-        {
-            throw new InvalidOperationException("Transcribe audio first.");
-        }
-
         VideoInfo.SummaryFileName = Path.ChangeExtension(VideoInfo.TextFileName, ".sum");
 
-        var transcription = await File.ReadAllTextAsync(VideoInfo.TextFileName);
-        var summary = await _aiService.GetCompletionForPromptAsync(transcription, _prompts.PromptForSummary);
+        var transcription = await Task.Run(async () => await File.ReadAllTextAsync(VideoInfo.TextFileName));
+        var summary = await Task.Run(async () =>
+            await _aiService.GetCompletionForPromptAsync(transcription, _prompts.PromptForSummary));
 
         await File.WriteAllTextAsync(VideoInfo.SummaryFileName, summary);
         _logger.LogInformation("Transcription summarized successfully. Summary saved to: {SummaryFile}",
             VideoInfo.SummaryFileName);
+
+        ViewText = summary;
+    }
+
+    private void EnsureDirectoryExists(string path)
+    {
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
+    }
+
+    private void CleanupFiles()
+    {
+        if (!KeepVideo && File.Exists(VideoInfo.VideoFileName))
+        {
+            File.Delete(VideoInfo.VideoFileName);
+            _logger.LogInformation("Video file deleted: {VideoFileName}", VideoInfo.VideoFileName);
+        }
+
+        if (!KeepAudio && File.Exists(VideoInfo.AudioFileName))
+        {
+            File.Delete(VideoInfo.AudioFileName);
+            _logger.LogInformation("Audio file deleted: {AudioFileName}", VideoInfo.AudioFileName);
+        }
+
+        if (!KeepTranscription && File.Exists(VideoInfo.TextFileName))
+        {
+            File.Delete(VideoInfo.TextFileName);
+            _logger.LogInformation("Transcription file deleted: {TextFileName}", VideoInfo.TextFileName);
+        }
+
+        if (!KeepTranscription && File.Exists(VideoInfo.SummaryFileName))
+        {
+            File.Delete(VideoInfo.SummaryFileName);
+            _logger.LogInformation("Summary file deleted: {SummaryFileName}", VideoInfo.SummaryFileName);
+        }
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

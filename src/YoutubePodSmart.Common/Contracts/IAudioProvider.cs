@@ -2,5 +2,5 @@
 
 public interface IAudioProvider
 {
-    void GetAudioFromVideo(string inputVideoFilePath, string outputAudioFilePath);
+    Task GetAudioFromVideoAsync(string inputVideoFilePath, string outputAudioFilePath);
 }

@@ -2,18 +2,48 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:YoutubePodSmart.Maui.ViewModels"
-             x:Class="YoutubePodSmart.Maui.MainPage">
+             x:Class="YoutubePodSmart.Maui.MainPage"
+             Title="">
 
     <ContentPage.BindingContext>
         <vm:MainViewModel />
     </ContentPage.BindingContext>
 
-    <StackLayout Padding="10">
-        <Entry Placeholder="Enter Video URL" Text="{Binding VideoInfo.VideoUrl}" />
-        <Button Text="Get Video" Command="{Binding GetVideoCommand}" />
-        <Button Text="Get Audio" Command="{Binding GetAudioCommand}" />
-        <Button Text="Transcribe Audio" Command="{Binding TranscribeAudioCommand}" />
-        <Button Text="Get Summary" Command="{Binding SummarizeTranscriptionCommand}" />
-        <Editor Text="{Binding VideoInfo.Transcription}" IsReadOnly="True" />
-    </StackLayout>
+    <Grid Padding="10" RowSpacing="10" ColumnSpacing="10">
+        <!-- Define row and column definitions for layout -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <!-- First Row: URL input and Run button -->
+        <Entry Grid.Row="0" Grid.Column="0" Placeholder="Enter Video URL" Text="{Binding VideoInfo.VideoUrl}" />
+        <Button Grid.Row="0" Grid.Column="1" Text="Run" Command="{Binding GetVideoCommand}" />
+
+        <!-- Second Row: Boolean options -->
+        <StackLayout Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalOptions="Center">
+            <CheckBox IsChecked="{Binding KeepVideo}" />
+            <Label Text="Keep video" VerticalOptions="Center" />
+
+            <CheckBox IsChecked="{Binding KeepAudio}" Margin="20,0,0,0" />
+            <Label Text="Keep audio" VerticalOptions="Center" />
+
+            <CheckBox IsChecked="{Binding KeepTranscription}" Margin="20,0,0,0" />
+            <Label Text="Keep transcription" VerticalOptions="Center" />
+        </StackLayout>
+
+        <!-- Third Row: Spinner for loading state -->
+        <ActivityIndicator Grid.Row="2" Grid.ColumnSpan="2" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" VerticalOptions="Center" />
+
+        <!-- Fourth Row: Steps log display -->
+        <ScrollView Grid.Row="3" Grid.ColumnSpan="2">
+            <Editor Text="{Binding ViewText}" IsReadOnly="True" />
+        </ScrollView>
+    </Grid>
 </ContentPage>

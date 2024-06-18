@@ -121,7 +121,7 @@ public partial class MainForm : Form
             progressTimer.Start();
             UpdateStatus("Extracting audio...");
 
-            await Task.Run(() => new ExtractorFFMpeg().GetAudioFromVideo(_videoFileName, _audioFileName));
+            await new ExtractorWindowsFfMpeg().GetAudioFromVideoAsync(_videoFileName, _audioFileName);
 
             UpdateStatus("Audio extracted", 100);
             progressTimer.Stop();
