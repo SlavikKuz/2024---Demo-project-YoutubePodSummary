@@ -250,7 +250,7 @@ public class MainViewModel : INotifyPropertyChanged
         }
     }
 
-    private void CleanupFiles()
+    public void CleanupFiles()
     {
         if (!KeepVideo && File.Exists(VideoInfo.VideoFileName))
         {

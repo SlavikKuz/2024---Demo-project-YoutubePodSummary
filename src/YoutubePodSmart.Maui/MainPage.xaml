@@ -10,7 +10,6 @@
     </ContentPage.BindingContext>
 
     <Grid Padding="10" RowSpacing="10" ColumnSpacing="10">
-        <!-- Define row and column definitions for layout -->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
