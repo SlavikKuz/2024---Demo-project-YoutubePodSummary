@@ -203,7 +203,9 @@ public class MainViewModel : INotifyPropertyChanged
         if (File.Exists(VideoInfo.AudioFileName))
             return;
 
-        await new ExtractorAndroidFfMpegCore().GetAudioFromVideoAsync(VideoInfo.VideoFileName, VideoInfo.AudioFileName);
+        await new ExtractorWindowsFfMpeg().GetAudioFromVideoAsync(VideoInfo.VideoFileName, VideoInfo.AudioFileName);
+
+        //await new ExtractorAndroidFfMpegCore().GetAudioFromVideoAsync(VideoInfo.VideoFileName, VideoInfo.AudioFileName);
         _logger.LogInformation("Audio extracted successfully to path: {AudioPath}", VideoInfo.AudioFileName);
         ViewText += $"Audio extracted to: {VideoInfo.AudioFileName}\n";
     }
