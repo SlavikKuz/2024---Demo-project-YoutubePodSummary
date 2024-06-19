@@ -2,6 +2,8 @@
 
 YoutubePodSmart is a .NET MAUI application designed to download videos from YouTube, extract audio, transcribe the audio, and summarize the transcription. It supports cross-platform operation on both Windows and Android.
 
+<img src="https://github.com/SlavikKuz/YoutubePodSummary/blob/main/Animation.gif"  alt="Admin View" width ="600" hspace="20"/>
+
 ## Features
 
 - Download videos from YouTube
